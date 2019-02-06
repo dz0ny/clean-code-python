@@ -314,6 +314,45 @@ create_menu(
 )
 ```
 
+Even fancier:
+```python
+from dataclasses import dataclass
+from dataclasses import asdict
+
+@dataclass
+class MenuConfig:
+    """A configuration for the Menu.
+
+    Attributes:
+        title: The title of the Menu.
+        body: The body of the Menu.
+        button_text: The text for the button label.
+        cancellable: Can it be cancelled?
+    """
+    title: str
+    body: str
+    button_text: str
+    cancellable: bool = False
+
+  def __json__(self) -> dict:
+      """Props of a menu for JS component."""
+      props = asdict(self)
+      props.extend({"kind": "MenuConfig"})
+      return props
+      
+  def __html__(self) -> str:
+      """Props of a menu for template."""
+      return f'<menu data-cancellable="{self.cancellable}" data-title="{self.title}" data-text="{self.text}">{self.body}</menu>'
+
+MenuConfig(
+    title="My delicious menu",
+    body="A description of the various items on the menu",
+    button_text="Order now!"
+).__json__()
+
+```
+
+
 **[⬆ back to top](#table-of-contents)**
 
 ### Functions should do one thing
